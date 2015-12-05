@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="TDr-6i-Jyz">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Demo Collection View Controller-->
+        <scene sceneID="SLY-bX-eZm">
+            <objects>
+                <collectionViewController id="TDr-6i-Jyz" customClass="DemoCollectionViewController" customModule="AWImageViewController" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="fon-At-sDp">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="9Z8-B2-65F">
+                            <size key="itemSize" width="264" height="186"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="imageCell" id="QFs-pK-dWe" customClass="ImageCollectionViewCell" customModule="AWImageViewController" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="264" height="186"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="264" height="186"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CIq-7R-aw3">
+                                            <rect key="frame" x="8" y="8" width="248" height="170"/>
+                                            <animations/>
+                                        </imageView>
+                                    </subviews>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstItem="CIq-7R-aw3" firstAttribute="leading" secondItem="QFs-pK-dWe" secondAttribute="leadingMargin" id="EoI-gt-gtc"/>
+                                    <constraint firstItem="CIq-7R-aw3" firstAttribute="top" secondItem="QFs-pK-dWe" secondAttribute="topMargin" id="FWV-LS-IQl"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="CIq-7R-aw3" secondAttribute="bottom" id="e3g-iN-lm9"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="CIq-7R-aw3" secondAttribute="trailing" id="s9g-p5-aiT"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="imageView" destination="CIq-7R-aw3" id="zLy-uP-zbw"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="TDr-6i-Jyz" id="gR4-ts-w2y"/>
+                            <outlet property="delegate" destination="TDr-6i-Jyz" id="z2m-XH-nhl"/>
+                        </connections>
+                    </collectionView>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZM5-1D-zKb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1133" y="453"/>
+        </scene>
+    </scenes>
+</document>
