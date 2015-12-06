@@ -22,7 +22,7 @@ class DemoCollectionViewController: UICollectionViewController, AWImageViewContr
 		self.collectionView!.backgroundColor = UIColor.whiteColor()
 		self.collectionView!.delegate = self
 		
-		for i in 0...10 {
+		for i in 0...5 {
 			self.images.append(UIImage(named: "\(i)")!)
 		}
     }
@@ -40,7 +40,7 @@ class DemoCollectionViewController: UICollectionViewController, AWImageViewContr
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 11
+        return 6
     }
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -62,19 +62,22 @@ class DemoCollectionViewController: UICollectionViewController, AWImageViewContr
 		self.collectionView!.addSubview(uselessView)
 		let frame = imageView.convertRect(imageView.bounds, toView: uselessView)
 		uselessView.removeFromSuperview()
-		self.showImageViewer(self.images[indexPath.row], originFrame: frame)
+		self.showImageViewer(imageView, originFrame: frame)
 	}
 	
-	func showImageViewer(image : UIImage, originFrame : CGRect){
+	func showImageViewer(imageView : UIImageView, originFrame : CGRect){
 		self.awImageVC = AWImageViewController()
 		self.awImageVC.delegate = self
 		
-		self.awImageVC.image = image
+		self.awImageVC.originImageView = imageView
 		self.awImageVC.originFrame = originFrame
+		
+		self.awImageVC.backgroundView = self.collectionView!
+		self.awImageVC.backgroundStyle = .LightBlur
 		
 		let offseet = self.collectionView!.contentOffset
 		self.awImageVC.view.frame = CGRectMake(0, offseet.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
-		
+				
 		self.collectionView!.addSubview(self.awImageVC.view)
 		self.collectionView!.scrollEnabled = false
 	}

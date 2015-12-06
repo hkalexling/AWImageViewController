@@ -12,15 +12,26 @@ protocol AWImageViewControllerDelegate {
 	func awImageViewDidDismiss()
 }
 
+enum AWImageViewBackgroundStyle {
+	case LightBlur
+	case ExtraLightBlur
+	case DarkBlur
+}
+
 class AWImageViewController: UIViewController {
 	
 	var delegate : AWImageViewControllerDelegate?
 	
-	var image : UIImage!
+	var backgroundView : UIView?
+	var backgroundStyle : AWImageViewBackgroundStyle!
+	private var bgImageView : UIImageView!
+	
+	var originImageView : UIImageView!
+	private var image : UIImage!
 	var originFrame : CGRect!
 	
-	var scrollView : UIScrollView!
-	var imageView : UIImageView!
+	private var scrollView : UIScrollView!
+	private var imageView : UIImageView!
 	
 	var finishedDisplaying : Bool = false
 	
@@ -28,13 +39,37 @@ class AWImageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
 	
 	override func viewWillAppear(animated: Bool) {
 		
+		if self.backgroundStyle == nil {
+			self.backgroundStyle = .LightBlur
+		}
+		
+		self.image = originImageView.image
+		self.originImageView.image = UIImage.imageWithColorAndSize(UIColor.clearColor(), size: CGSizeMake(10, 10))
+		
+		if let bgView = self.backgroundView {
+			var bgImg : UIImage
+			if self.backgroundStyle == .LightBlur {
+				bgImg = UIImage.imageFromUIView(bgView).applyLightEffect()
+			}
+			else if self.backgroundStyle == .ExtraLightBlur {
+				bgImg = UIImage.imageFromUIView(bgView).applyExtraLightEffect()
+			}
+			else{
+				bgImg = UIImage.imageFromUIView(bgView).applyDarkEffect()
+			}
+			self.bgImageView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height))
+			self.bgImageView.image = bgImg
+			self.view.addSubview(self.bgImageView)
+		}
+		
 		self.scrollView = UIScrollView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height))
+		self.scrollView.showsHorizontalScrollIndicator = false
+		self.scrollView.showsVerticalScrollIndicator = false
+		
 		self.view.addSubview(self.scrollView)
 		
 		self.imageView = UIImageView(frame: self.originFrame)
@@ -54,10 +89,6 @@ class AWImageViewController: UIViewController {
 		let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: Selector("pinched:"))
 		self.view.addGestureRecognizer(pinchRecognizer)
 		
-		self.imageView.userInteractionEnabled = true
-		let panRecognizer = UIPanGestureRecognizer(target: self, action: Selector("paned:"))
-		self.imageView.addGestureRecognizer(panRecognizer)
-		
 		self.initialAnimation()
 	}
 	
@@ -74,30 +105,7 @@ class AWImageViewController: UIViewController {
 		}
 		self.updateContentOffset()
 	}
-	
-	func paned(sender : UIPanGestureRecognizer){
-		if self.imageView.frame.width != UIScreen.mainScreen().bounds.width {
-			return
-		}
-		if sender.state == UIGestureRecognizerState.Began {
-			self.dragPoint = sender.locationInView(self.imageView)
-		}
-		if sender.state == UIGestureRecognizerState.Changed{
-			let currentLocation = sender.locationInView(self.view)
-			let originalFrame = self.imageView.frame
-			
-			self.imageView.frame = CGRectMake(currentLocation.x - self.dragPoint.x, currentLocation.y - self.dragPoint.y, originalFrame.width, originalFrame.height)
-		}
-		if sender.state == UIGestureRecognizerState.Ended {
-			UIView.animateWithDuration(0.3, animations: {
-				let width : CGFloat = UIScreen.mainScreen().bounds.width
-				let height : CGFloat = width * self.image.size.height/self.image.size.width
-				self.imageView.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
-				}, completion: {(finished : Bool) in
-			})
-		}
-	}
-	
+
 	func singleTapped(){
 		self.dismiss()
 	}
@@ -110,7 +118,9 @@ class AWImageViewController: UIViewController {
     
 	func initialAnimation(){
 		UIView.animateWithDuration(0.3, animations: {
-			self.view.backgroundColor = UIColor.blackColor()
+			if self.backgroundView == nil {
+				self.view.backgroundColor = UIColor.blackColor()
+			}
 			let width : CGFloat = UIScreen.mainScreen().bounds.width
 			let height : CGFloat = width * self.image.size.height/self.image.size.width
 			self.imageView.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
@@ -148,6 +158,7 @@ class AWImageViewController: UIViewController {
 			self.imageView.frame = self.originFrame
 			}, completion: {(finished : Bool) in
 				self.view.hidden = true //I know I shouldn't simply hide it, but if I use `self.view.removeFromSuperview()`, the `didSelectItemAtIndexPath` method in collection view controller won't get called again. I might come back and fix this later
+				self.originImageView.image = self.image
 				self.delegate?.awImageViewDidDismiss()
 		})
 	}

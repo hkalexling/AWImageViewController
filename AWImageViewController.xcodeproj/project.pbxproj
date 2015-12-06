@@ -14,6 +14,8 @@
 		713D12FB1C12288A001EB1A1 /* DemoCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713D12FA1C12288A001EB1A1 /* DemoCollectionViewController.swift */; };
 		713D12FD1C1228DC001EB1A1 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713D12FC1C1228DC001EB1A1 /* ImageCollectionViewCell.swift */; };
 		713D12FF1C122DD7001EB1A1 /* AWImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713D12FE1C122DD7001EB1A1 /* AWImageViewController.swift */; };
+		71FC2F751C1373B1002C1601 /* AWImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FC2F741C1373B1002C1601 /* AWImageViewExtension.swift */; };
+		71FC2F791C13B0B9002C1601 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 71FC2F781C13B0B9002C1601 /* UIImage+ImageEffects.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,10 @@
 		713D12FA1C12288A001EB1A1 /* DemoCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCollectionViewController.swift; sourceTree = "<group>"; };
 		713D12FC1C1228DC001EB1A1 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		713D12FE1C122DD7001EB1A1 /* AWImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWImageViewController.swift; sourceTree = "<group>"; };
+		71FC2F741C1373B1002C1601 /* AWImageViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWImageViewExtension.swift; sourceTree = "<group>"; };
+		71FC2F761C13B0B8002C1601 /* AWImageViewController-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AWImageViewController-Bridging-Header.h"; sourceTree = "<group>"; };
+		71FC2F771C13B0B9002C1601 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		71FC2F781C13B0B9002C1601 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,11 +67,15 @@
 				713D12E61C11FA14001EB1A1 /* AppDelegate.swift */,
 				713D12FA1C12288A001EB1A1 /* DemoCollectionViewController.swift */,
 				713D12FE1C122DD7001EB1A1 /* AWImageViewController.swift */,
+				71FC2F741C1373B1002C1601 /* AWImageViewExtension.swift */,
 				713D12FC1C1228DC001EB1A1 /* ImageCollectionViewCell.swift */,
 				713D12EA1C11FA14001EB1A1 /* Main.storyboard */,
 				713D12ED1C11FA14001EB1A1 /* Assets.xcassets */,
 				713D12EF1C11FA14001EB1A1 /* LaunchScreen.storyboard */,
 				713D12F21C11FA14001EB1A1 /* Info.plist */,
+				71FC2F771C13B0B9002C1601 /* UIImage+ImageEffects.h */,
+				71FC2F781C13B0B9002C1601 /* UIImage+ImageEffects.m */,
+				71FC2F761C13B0B8002C1601 /* AWImageViewController-Bridging-Header.h */,
 			);
 			path = AWImageViewController;
 			sourceTree = "<group>";
@@ -141,7 +151,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71FC2F751C1373B1002C1601 /* AWImageViewExtension.swift in Sources */,
 				713D12E71C11FA14001EB1A1 /* AppDelegate.swift in Sources */,
+				71FC2F791C13B0B9002C1601 /* UIImage+ImageEffects.m in Sources */,
 				713D12FD1C1228DC001EB1A1 /* ImageCollectionViewCell.swift in Sources */,
 				713D12FB1C12288A001EB1A1 /* DemoCollectionViewController.swift in Sources */,
 				713D12FF1C122DD7001EB1A1 /* AWImageViewController.swift in Sources */,
@@ -257,10 +269,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = AWImageViewController/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = hkalexling.AWImageViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "AWImageViewController/AWImageViewController-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -268,10 +283,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = AWImageViewController/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = hkalexling.AWImageViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "AWImageViewController/AWImageViewController-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -294,6 +311,7 @@
 				713D12F71C11FA14001EB1A1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
