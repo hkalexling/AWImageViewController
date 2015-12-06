@@ -55,3 +55,4 @@ For more detail usages, please refer to the [Demo app](https://github.com/hkalex
 ##Todo
 
 - [ ] Integrate an image downloader to download image from a given url
+- [ ] Implement 3D Touch peek and pop
