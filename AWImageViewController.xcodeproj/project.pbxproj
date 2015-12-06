@@ -64,11 +64,25 @@
 		713D12E51C11FA14001EB1A1 /* AWImageViewController */ = {
 			isa = PBXGroup;
 			children = (
-				713D12E61C11FA14001EB1A1 /* AppDelegate.swift */,
-				713D12FA1C12288A001EB1A1 /* DemoCollectionViewController.swift */,
+				71FC2FA61C140263002C1601 /* DemoApp */,
+				71FC2FA51C14024A002C1601 /* Source */,
+			);
+			path = AWImageViewController;
+			sourceTree = "<group>";
+		};
+		71FC2FA51C14024A002C1601 /* Source */ = {
+			isa = PBXGroup;
+			children = (
 				713D12FE1C122DD7001EB1A1 /* AWImageViewController.swift */,
 				71FC2F741C1373B1002C1601 /* AWImageViewExtension.swift */,
-				713D12FC1C1228DC001EB1A1 /* ImageCollectionViewCell.swift */,
+			);
+			name = Source;
+			path = ../Source;
+			sourceTree = "<group>";
+		};
+		71FC2FA61C140263002C1601 /* DemoApp */ = {
+			isa = PBXGroup;
+			children = (
 				713D12EA1C11FA14001EB1A1 /* Main.storyboard */,
 				713D12ED1C11FA14001EB1A1 /* Assets.xcassets */,
 				713D12EF1C11FA14001EB1A1 /* LaunchScreen.storyboard */,
@@ -76,8 +90,11 @@
 				71FC2F771C13B0B9002C1601 /* UIImage+ImageEffects.h */,
 				71FC2F781C13B0B9002C1601 /* UIImage+ImageEffects.m */,
 				71FC2F761C13B0B8002C1601 /* AWImageViewController-Bridging-Header.h */,
+				713D12E61C11FA14001EB1A1 /* AppDelegate.swift */,
+				713D12FA1C12288A001EB1A1 /* DemoCollectionViewController.swift */,
+				713D12FC1C1228DC001EB1A1 /* ImageCollectionViewCell.swift */,
 			);
-			path = AWImageViewController;
+			name = DemoApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

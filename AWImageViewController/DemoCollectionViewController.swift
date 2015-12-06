@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DemoCollectionViewController: UICollectionViewController, AWImageViewControllerDelegate {
+class DemoCollectionViewController: UICollectionViewController, AWImageViewControllerDelegate{
 	
 	var images : [UIImage] = []
 	
@@ -64,7 +64,7 @@ class DemoCollectionViewController: UICollectionViewController, AWImageViewContr
 	func showImageViewer(imageView : UIImageView){
 		self.awImageVC = AWImageViewController()
 		
-		self.awImageVC.setup(imageView, parentView: self.collectionView!, backgroundStyle: AWImageViewBackgroundStyle.LightBlur, animationDuration: nil, delegate: self)
+		self.awImageVC.setup(imageView, parentView: self.collectionView!, backgroundStyle: AWImageViewBackgroundStyle.LightBlur, animationDuration: nil, delegate: self, longPressDelegate: nil)
 				
 		self.collectionView!.addSubview(self.awImageVC.view)
 		self.collectionView!.scrollEnabled = false

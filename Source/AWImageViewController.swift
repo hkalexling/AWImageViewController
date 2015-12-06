@@ -8,8 +8,14 @@
 
 import UIKit
 
+//Conform to this delegate to get dismiss call back
 protocol AWImageViewControllerDelegate {
 	func awImageViewDidDismiss()
+}
+
+//Conform to this delegate to override what happen when long pressed
+protocol AWImageViewControllerLongPressDelegate {
+	func awImageViewDidLongPress()
 }
 
 enum AWImageViewBackgroundStyle {
@@ -22,6 +28,7 @@ enum AWImageViewBackgroundStyle {
 class AWImageViewController: UIViewController, UIScrollViewDelegate {
 	
 	var delegate : AWImageViewControllerDelegate?
+	var longPressDelegate : AWImageViewControllerLongPressDelegate?
 	
 	var animationDuration : NSTimeInterval?
 	
@@ -40,13 +47,14 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 	
 	private var didSetup : Bool = false
 	
-	func setup(originImageView : UIImageView, parentView : UIView, backgroundStyle : AWImageViewBackgroundStyle?, animationDuration : NSTimeInterval?, delegate : AWImageViewControllerDelegate?){
+	func setup(originImageView : UIImageView, parentView : UIView, backgroundStyle : AWImageViewBackgroundStyle?, animationDuration : NSTimeInterval?, delegate : AWImageViewControllerDelegate?, longPressDelegate : AWImageViewControllerLongPressDelegate?){
 		
 		self.originImageView = originImageView
 		self.parentView = parentView
 		self.backgroundStyle = backgroundStyle
 		self.animationDuration = animationDuration
 		self.delegate = delegate
+		self.longPressDelegate = longPressDelegate
 		
 		self.didSetup = true
 	}
@@ -112,6 +120,9 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 		
 		let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: Selector("pinched:"))
 		self.view.addGestureRecognizer(pinchRecognizer)
+		
+		let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("longPressed"))
+		self.view.addGestureRecognizer(longPressRecognizer)
 		
 		self.initialAnimation()
     }
@@ -200,5 +211,42 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 			top = (self.scrollView.contentSize.height - self.scrollView.bounds.size.height) / 2
 		}
 		self.scrollView.contentInset = UIEdgeInsetsMake(top, left, -top, -left)
+	}
+	
+	func longPressed(){
+		if self.longPressDelegate == nil {
+			awImageViewDidLongPress()
+		}
+		else{
+			longPressDelegate?.awImageViewDidLongPress()
+		}
+	}
+	
+	func awImageViewDidLongPress(){
+		if self.imageView.bounds.width == UIScreen.mainScreen().bounds.width {
+			let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+			
+			let saveAction = UIAlertAction(title: "Save Image", style: .Default, handler: {(alert : UIAlertAction) -> Void in
+				UIImageWriteToSavedPhotosAlbum(self.image, self, Selector("imageSaved:didFinishSavingWithError:contextInfo:"), nil)
+			})
+			let copyAction = UIAlertAction(title: "Copy Image", style: .Default, handler: {(alert : UIAlertAction) -> Void in
+				UIPasteboard.generalPasteboard().image = self.image
+			})
+			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+			sheet.addAction(saveAction)
+			sheet.addAction(copyAction)
+			sheet.addAction(cancelAction)
+			
+			if let popoverController = sheet.popoverPresentationController {
+				popoverController.sourceView = self.imageView
+				popoverController.sourceRect = self.imageView.bounds
+			}
+			
+			self.presentViewController(sheet, animated: true, completion: nil)
+		}
+	}
+	
+	func imageSaved(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<()>) {
+		dispatch_async(dispatch_get_main_queue(), {})
 	}
 }
