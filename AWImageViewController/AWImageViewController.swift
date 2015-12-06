@@ -16,50 +16,74 @@ enum AWImageViewBackgroundStyle {
 	case LightBlur
 	case ExtraLightBlur
 	case DarkBlur
+	case None
 }
 
-class AWImageViewController: UIViewController {
+class AWImageViewController: UIViewController, UIScrollViewDelegate {
 	
 	var delegate : AWImageViewControllerDelegate?
 	
-	var backgroundView : UIView?
-	var backgroundStyle : AWImageViewBackgroundStyle!
+	var animationDuration : NSTimeInterval?
+	
+	var parentView : UIView!
+	var backgroundStyle : AWImageViewBackgroundStyle?
 	private var bgImageView : UIImageView!
 	
 	var originImageView : UIImageView!
 	private var image : UIImage!
-	var originFrame : CGRect!
+	private var originFrame : CGRect!
 	
 	private var scrollView : UIScrollView!
 	private var imageView : UIImageView!
 	
-	var finishedDisplaying : Bool = false
+	private var finishedDisplaying : Bool = false
 	
-	var dragPoint : CGPoint = CGPointZero
-
+	private var didSetup : Bool = false
+	
+	func setup(originImageView : UIImageView, parentView : UIView, backgroundStyle : AWImageViewBackgroundStyle?, animationDuration : NSTimeInterval?, delegate : AWImageViewControllerDelegate?){
+		
+		self.originImageView = originImageView
+		self.parentView = parentView
+		self.backgroundStyle = backgroundStyle
+		self.animationDuration = animationDuration
+		self.delegate = delegate
+		
+		self.didSetup = true
+	}
+	
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-	
-	override func viewWillAppear(animated: Bool) {
+		
+		if !self.didSetup {
+			return
+		}
 		
 		if self.backgroundStyle == nil {
-			self.backgroundStyle = .LightBlur
+			self.backgroundStyle = .None
 		}
+		
+		if self.animationDuration == nil {
+			self.animationDuration = 0.3
+		}
+		
+		self.originFrame = self.originImageView.convertRect(self.originImageView.bounds, toView: nil)
+		
+		self.view.frame = self.parentView.bounds
+		self.parentView.addSubview(self.view)
 		
 		self.image = originImageView.image
 		self.originImageView.image = UIImage.imageWithColorAndSize(UIColor.clearColor(), size: CGSizeMake(10, 10))
 		
-		if let bgView = self.backgroundView {
+		if self.backgroundStyle != .None {
 			var bgImg : UIImage
 			if self.backgroundStyle == .LightBlur {
-				bgImg = UIImage.imageFromUIView(bgView).applyLightEffect()
+				bgImg = UIImage.imageFromUIView(self.parentView).applyLightEffect()
 			}
 			else if self.backgroundStyle == .ExtraLightBlur {
-				bgImg = UIImage.imageFromUIView(bgView).applyExtraLightEffect()
+				bgImg = UIImage.imageFromUIView(self.parentView).applyExtraLightEffect()
 			}
 			else{
-				bgImg = UIImage.imageFromUIView(bgView).applyDarkEffect()
+				bgImg = UIImage.imageFromUIView(self.parentView).applyDarkEffect()
 			}
 			self.bgImageView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height))
 			self.bgImageView.image = bgImg
@@ -90,7 +114,7 @@ class AWImageViewController: UIViewController {
 		self.view.addGestureRecognizer(pinchRecognizer)
 		
 		self.initialAnimation()
-	}
+    }
 	
 	func pinched(sender: UIPinchGestureRecognizer) {
 		if sender.state == UIGestureRecognizerState.Ended {
@@ -117,8 +141,8 @@ class AWImageViewController: UIViewController {
 	}
     
 	func initialAnimation(){
-		UIView.animateWithDuration(0.3, animations: {
-			if self.backgroundView == nil {
+		UIView.animateWithDuration(self.animationDuration!, animations: {
+			if self.backgroundStyle == .None {
 				self.view.backgroundColor = UIColor.blackColor()
 			}
 			let width : CGFloat = UIScreen.mainScreen().bounds.width
@@ -135,14 +159,14 @@ class AWImageViewController: UIViewController {
 			
 			let width : CGFloat = self.image.size.width
 			let height : CGFloat = self.image.size.height
-			UIView.animateWithDuration(0.3, animations: {
+			UIView.animateWithDuration(self.animationDuration!, animations: {
 				self.imageView.frame = CGRectMake(UIScreen.mainScreen().bounds.width/2 - width/2, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
 				}, completion: {(finished : Bool) in
 					self.updateContentOffset()
 			})
 		}
 		else{
-			UIView.animateWithDuration(0.3, animations: {
+			UIView.animateWithDuration(self.animationDuration!, animations: {
 				let width : CGFloat = UIScreen.mainScreen().bounds.width
 				let height : CGFloat = width * self.image.size.height/self.image.size.width
 				self.imageView.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
@@ -153,7 +177,7 @@ class AWImageViewController: UIViewController {
 	}
 	
 	func dismiss(){
-		UIView.animateWithDuration(0.3, animations: {
+		UIView.animateWithDuration(self.animationDuration!, animations: {
 			self.view.backgroundColor = UIColor.clearColor()
 			self.imageView.frame = self.originFrame
 			}, completion: {(finished : Bool) in

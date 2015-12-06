@@ -58,25 +58,13 @@ class DemoCollectionViewController: UICollectionViewController, AWImageViewContr
 	
 	override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		let imageView = (collectionView.cellForItemAtIndexPath(indexPath) as! ImageCollectionViewCell).imageView
-		let uselessView = UIView(frame: CGRectMake(0, self.collectionView!.contentOffset.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height))
-		self.collectionView!.addSubview(uselessView)
-		let frame = imageView.convertRect(imageView.bounds, toView: uselessView)
-		uselessView.removeFromSuperview()
-		self.showImageViewer(imageView, originFrame: frame)
+		self.showImageViewer(imageView)
 	}
 	
-	func showImageViewer(imageView : UIImageView, originFrame : CGRect){
+	func showImageViewer(imageView : UIImageView){
 		self.awImageVC = AWImageViewController()
-		self.awImageVC.delegate = self
 		
-		self.awImageVC.originImageView = imageView
-		self.awImageVC.originFrame = originFrame
-		
-		self.awImageVC.backgroundView = self.collectionView!
-		self.awImageVC.backgroundStyle = .LightBlur
-		
-		let offseet = self.collectionView!.contentOffset
-		self.awImageVC.view.frame = CGRectMake(0, offseet.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
+		self.awImageVC.setup(imageView, parentView: self.collectionView!, backgroundStyle: AWImageViewBackgroundStyle.LightBlur, animationDuration: nil, delegate: self)
 				
 		self.collectionView!.addSubview(self.awImageVC.view)
 		self.collectionView!.scrollEnabled = false
