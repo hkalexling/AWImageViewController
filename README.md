@@ -9,8 +9,9 @@ A neat image viewer written in Swift
 
 Basically everything you will expect for an image viewer:
 
-- Double taps to zoom in/out
 - Single tap to dismiss
+- Double taps to zoom in/out
+- Pinch to zoom in/out
 - Pan when zoomed in
 - Long press to bring up action sheet (customisable)
 - Different background effects to choose from (three blur effects and one simple black background)
