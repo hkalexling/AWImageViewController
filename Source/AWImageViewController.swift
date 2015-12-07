@@ -73,7 +73,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 	
 	var progressIndicatorColor : UIColor = UIColor.whiteColor()
 	var progressIndicatorTextColor : UIColor = UIColor.whiteColor()
-	var progressIndicatorBgColor : UIColor = UIColor.darkGrayColor()
+	var progressIndicatorBgColor : UIColor = UIColor.clearColor()
 	var progressIndicatorShowLabel : Bool = true
 	var progressIndicatorWidth : CGFloat = 10
 	var progressIndicatorLabelFont : UIFont = UIFont.systemFontOfSize(40)
