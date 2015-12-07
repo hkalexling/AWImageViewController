@@ -1,5 +1,5 @@
 # AWImageViewController
-A neat image viewer written in Swift
+A neat and lightweight image viewer written in Swift
 
 ##Demo GIF
 
