@@ -87,5 +87,5 @@ For more detail usages, please refer to the two demo apps included in this repo
 ##Todo
 
 - [X] Integrate an image downloader to download image from a given URL
-- [ ] Use a better looking progress indicator
+- [X] Use a better looking progress indicator
 - [ ] Implement 3D Touch peek and pop
