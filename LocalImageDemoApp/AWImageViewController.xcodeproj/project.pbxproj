@@ -14,7 +14,6 @@
 		713D12FB1C12288A001EB1A1 /* DemoCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713D12FA1C12288A001EB1A1 /* DemoCollectionViewController.swift */; };
 		713D12FD1C1228DC001EB1A1 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713D12FC1C1228DC001EB1A1 /* ImageCollectionViewCell.swift */; };
 		713D12FF1C122DD7001EB1A1 /* AWImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713D12FE1C122DD7001EB1A1 /* AWImageViewController.swift */; };
-		71FC2F751C1373B1002C1601 /* AWImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71FC2F741C1373B1002C1601 /* AWImageViewExtension.swift */; };
 		71FC2F791C13B0B9002C1601 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 71FC2F781C13B0B9002C1601 /* UIImage+ImageEffects.m */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +27,6 @@
 		713D12FA1C12288A001EB1A1 /* DemoCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCollectionViewController.swift; sourceTree = "<group>"; };
 		713D12FC1C1228DC001EB1A1 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		713D12FE1C122DD7001EB1A1 /* AWImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWImageViewController.swift; sourceTree = "<group>"; };
-		71FC2F741C1373B1002C1601 /* AWImageViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWImageViewExtension.swift; sourceTree = "<group>"; };
 		71FC2F761C13B0B8002C1601 /* AWImageViewController-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AWImageViewController-Bridging-Header.h"; sourceTree = "<group>"; };
 		71FC2F771C13B0B9002C1601 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
 		71FC2F781C13B0B9002C1601 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
@@ -74,10 +72,9 @@
 			isa = PBXGroup;
 			children = (
 				713D12FE1C122DD7001EB1A1 /* AWImageViewController.swift */,
-				71FC2F741C1373B1002C1601 /* AWImageViewExtension.swift */,
 			);
 			name = Source;
-			path = ../Source;
+			path = ../../Source;
 			sourceTree = "<group>";
 		};
 		71FC2FA61C140263002C1601 /* DemoApp */ = {
@@ -168,7 +165,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				71FC2F751C1373B1002C1601 /* AWImageViewExtension.swift in Sources */,
 				713D12E71C11FA14001EB1A1 /* AppDelegate.swift in Sources */,
 				71FC2F791C13B0B9002C1601 /* UIImage+ImageEffects.m in Sources */,
 				713D12FD1C1228DC001EB1A1 /* ImageCollectionViewCell.swift in Sources */,

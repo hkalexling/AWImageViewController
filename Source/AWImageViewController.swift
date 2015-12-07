@@ -25,27 +25,50 @@ enum AWImageViewBackgroundStyle {
 	case None
 }
 
-class AWImageViewController: UIViewController, UIScrollViewDelegate {
+extension UIImage {
+	class func imageWithColorAndSize(color : UIColor, size : CGSize) -> UIImage {
+		let rect = CGRectMake(0, 0, size.width, size.height)
+		UIGraphicsBeginImageContextWithOptions(size, false, 0)
+		color.setFill()
+		UIRectFill(rect)
+		let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		return image
+	}
 	
-	var delegate : AWImageViewControllerDelegate?
-	var longPressDelegate : AWImageViewControllerLongPressDelegate?
+	class func imageFromUIView(view : UIView) -> UIImage{
+		UIGraphicsBeginImageContext(view.frame.size)
+		view.drawViewHierarchyInRect(view.frame, afterScreenUpdates: true)
+		let image = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		
+		return image
+	}
+}
+
+class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessionDownloadDelegate {
 	
-	var animationDuration : NSTimeInterval?
+	private var delegate : AWImageViewControllerDelegate?
+	private var longPressDelegate : AWImageViewControllerLongPressDelegate?
 	
-	var parentView : UIView!
-	var backgroundStyle : AWImageViewBackgroundStyle?
+	private var animationDuration : NSTimeInterval?
+	
+	private var parentView : UIView!
+	private var backgroundStyle : AWImageViewBackgroundStyle?
 	private var bgImageView : UIImageView!
 	
-	var originImageView : UIImageView!
+	private var originImageView : UIImageView?
 	private var image : UIImage!
-	private var originFrame : CGRect!
+	private var originFrame : CGRect?
 	
 	private var scrollView : UIScrollView!
-	private var imageView : UIImageView!
+	private var imageView : UIImageView?
 	
 	private var finishedDisplaying : Bool = false
 	
-	private var didSetup : Bool = false
+	private let indicator : UIProgressView = UIProgressView()
+	
+	private var urlString : String?
 	
 	func setup(originImageView : UIImageView, parentView : UIView, backgroundStyle : AWImageViewBackgroundStyle?, animationDuration : NSTimeInterval?, delegate : AWImageViewControllerDelegate?, longPressDelegate : AWImageViewControllerLongPressDelegate?){
 		
@@ -56,16 +79,22 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 		self.delegate = delegate
 		self.longPressDelegate = longPressDelegate
 		
-		self.didSetup = true
+		self.initialize()
 	}
 	
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	func setupWithUrl(urlString : String, parentView : UIView, backgroundStyle : AWImageViewBackgroundStyle?, animationDuration : NSTimeInterval?, delegate : AWImageViewControllerDelegate?, longPressDelegate : AWImageViewControllerLongPressDelegate?){
 		
-		if !self.didSetup {
-			return
-		}
+		self.urlString = urlString
+		self.parentView = parentView
+		self.backgroundStyle = backgroundStyle
+		self.animationDuration = animationDuration
+		self.delegate = delegate
+		self.longPressDelegate = longPressDelegate
 		
+		self.initialize()
+	}
+	
+	func initialize(){
 		if self.backgroundStyle == nil {
 			self.backgroundStyle = .None
 		}
@@ -74,13 +103,17 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 			self.animationDuration = 0.3
 		}
 		
-		self.originFrame = self.originImageView.convertRect(self.originImageView.bounds, toView: nil)
-		
 		self.view.frame = self.parentView.bounds
 		self.parentView.addSubview(self.view)
 		
-		self.image = originImageView.image
-		self.originImageView.image = UIImage.imageWithColorAndSize(UIColor.clearColor(), size: CGSizeMake(10, 10))
+		if self.originImageView != nil {
+			self.originFrame = self.originImageView!.convertRect(self.originImageView!.bounds, toView: nil)
+			self.image = originImageView!.image
+			self.originImageView!.image = UIImage.imageWithColorAndSize(UIColor.clearColor(), size: CGSizeMake(10, 10))
+		}
+		else{
+			self.imageFromUrl(self.urlString!)
+		}
 		
 		if self.backgroundStyle != .None {
 			var bgImg : UIImage
@@ -104,9 +137,15 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 		
 		self.view.addSubview(self.scrollView)
 		
-		self.imageView = UIImageView(frame: self.originFrame)
-		imageView.image = self.image
-		self.scrollView.addSubview(self.imageView)
+		self.indicator.frame = CGRectMake(UIScreen.mainScreen().bounds.width * 0.1, UIScreen.mainScreen().bounds.height/2, UIScreen.mainScreen().bounds.width * 0.8, 10)
+		self.indicator.hidden = true
+		self.view.addSubview(self.indicator)
+		
+		if self.originImageView != nil {
+			self.imageView = UIImageView(frame: self.originFrame!)
+			imageView!.image = self.image
+			self.scrollView.addSubview(self.imageView!)
+		}
 		
 		self.view.backgroundColor = UIColor.clearColor()
 		
@@ -124,21 +163,37 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 		let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("longPressed"))
 		self.view.addGestureRecognizer(longPressRecognizer)
 		
-		self.initialAnimation()
-    }
-	
-	func pinched(sender: UIPinchGestureRecognizer) {
-		if sender.state == UIGestureRecognizerState.Ended {
-			if self.imageView.frame.width < UIScreen.mainScreen().bounds.width {
-				let scale : CGFloat = UIScreen.mainScreen().bounds.width / self.imageView.frame.width
-				self.imageView.transform = CGAffineTransformScale(self.imageView.transform, scale, scale)
-			}
+		if self.originImageView != nil {
+			self.initialAnimation()
 		}
 		else{
-			self.imageView.transform = CGAffineTransformScale(self.imageView.transform, sender.scale, sender.scale)
-			sender.scale = 1
+			if self.backgroundStyle == .None {
+				UIView.animateWithDuration(self.animationDuration!, animations: {
+					self.view.backgroundColor = UIColor.blackColor()
+					}, completion: {(finished : Bool) in
+						self.indicator.hidden = false
+				})
+			}
+			else{
+				self.indicator.hidden = false
+			}
 		}
-		self.updateContentOffset()
+	}
+	
+	func pinched(sender: UIPinchGestureRecognizer) {
+		if self.finishedDisplaying {
+			if sender.state == UIGestureRecognizerState.Ended {
+				if self.imageView!.frame.width < UIScreen.mainScreen().bounds.width {
+					let scale : CGFloat = UIScreen.mainScreen().bounds.width / self.imageView!.frame.width
+					self.imageView!.transform = CGAffineTransformScale(self.imageView!.transform, scale, scale)
+				}
+			}
+			else{
+				self.imageView!.transform = CGAffineTransformScale(self.imageView!.transform, sender.scale, sender.scale)
+				sender.scale = 1
+			}
+			self.updateContentOffset()
+		}
 	}
 
 	func singleTapped(){
@@ -158,7 +213,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 			}
 			let width : CGFloat = UIScreen.mainScreen().bounds.width
 			let height : CGFloat = width * self.image.size.height/self.image.size.width
-			self.imageView.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
+			self.imageView!.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
 			}, completion: {(finished : Bool) in
 				self.finishedDisplaying = true
 				self.updateContentOffset()
@@ -166,12 +221,12 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 	}
 	
 	func toggleFullSize(){
-		if self.imageView.bounds.width == UIScreen.mainScreen().bounds.width {
+		if self.imageView!.bounds.width == UIScreen.mainScreen().bounds.width {
 			
 			let width : CGFloat = self.image.size.width
 			let height : CGFloat = self.image.size.height
 			UIView.animateWithDuration(self.animationDuration!, animations: {
-				self.imageView.frame = CGRectMake(UIScreen.mainScreen().bounds.width/2 - width/2, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
+				self.imageView!.frame = CGRectMake(UIScreen.mainScreen().bounds.width/2 - width/2, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
 				}, completion: {(finished : Bool) in
 					self.updateContentOffset()
 			})
@@ -180,7 +235,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 			UIView.animateWithDuration(self.animationDuration!, animations: {
 				let width : CGFloat = UIScreen.mainScreen().bounds.width
 				let height : CGFloat = width * self.image.size.height/self.image.size.width
-				self.imageView.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
+				self.imageView!.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
 				}, completion: {(finished : Bool) in
 					self.updateContentOffset()
 			})
@@ -188,19 +243,25 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 	}
 	
 	func dismiss(){
+		self.indicator.hidden = true
 		UIView.animateWithDuration(self.animationDuration!, animations: {
 			self.view.backgroundColor = UIColor.clearColor()
-			self.imageView.frame = self.originFrame
+			if self.originFrame != nil {
+				self.imageView!.frame = self.originFrame!
+			}
+			else if self.imageView != nil {
+				self.imageView!.hidden = true
+			}
 			}, completion: {(finished : Bool) in
 				self.view.hidden = true //I know I shouldn't simply hide it, but if I use `self.view.removeFromSuperview()`, the `didSelectItemAtIndexPath` method in collection view controller won't get called again. I might come back and fix this later
-				self.originImageView.image = self.image
+				self.originImageView?.image = self.image
 				self.delegate?.awImageViewDidDismiss()
 		})
 	}
 	func awImageViewDidDismiss() {}
 	
 	func updateContentOffset(){
-		self.scrollView.contentSize = self.imageView.frame.size
+		self.scrollView.contentSize = self.imageView!.frame.size
 
 		var top : CGFloat = 0
 		var left : CGFloat = 0
@@ -223,30 +284,57 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate {
 	}
 	
 	func awImageViewDidLongPress(){
-		if self.imageView.bounds.width == UIScreen.mainScreen().bounds.width {
-			let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-			
-			let saveAction = UIAlertAction(title: "Save Image", style: .Default, handler: {(alert : UIAlertAction) -> Void in
-				UIImageWriteToSavedPhotosAlbum(self.image, self, Selector("imageSaved:didFinishSavingWithError:contextInfo:"), nil)
-			})
-			let copyAction = UIAlertAction(title: "Copy Image", style: .Default, handler: {(alert : UIAlertAction) -> Void in
-				UIPasteboard.generalPasteboard().image = self.image
-			})
-			let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-			sheet.addAction(saveAction)
-			sheet.addAction(copyAction)
-			sheet.addAction(cancelAction)
-			
-			if let popoverController = sheet.popoverPresentationController {
-				popoverController.sourceView = self.imageView
-				popoverController.sourceRect = self.imageView.bounds
+		if self.imageView != nil {
+			if self.imageView!.bounds.width == UIScreen.mainScreen().bounds.width {
+				let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+				
+				let saveAction = UIAlertAction(title: "Save Image", style: .Default, handler: {(alert : UIAlertAction) -> Void in
+					UIImageWriteToSavedPhotosAlbum(self.image, nil, nil, nil)
+				})
+				let copyAction = UIAlertAction(title: "Copy Image", style: .Default, handler: {(alert : UIAlertAction) -> Void in
+					UIPasteboard.generalPasteboard().image = self.image
+				})
+				let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+				sheet.addAction(saveAction)
+				sheet.addAction(copyAction)
+				sheet.addAction(cancelAction)
+				
+				if let popoverController = sheet.popoverPresentationController {
+					popoverController.sourceView = self.imageView
+					popoverController.sourceRect = self.imageView!.bounds
+				}
+				
+				self.presentViewController(sheet, animated: true, completion: nil)
 			}
-			
-			self.presentViewController(sheet, animated: true, completion: nil)
 		}
 	}
 	
-	func imageSaved(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<()>) {
-		dispatch_async(dispatch_get_main_queue(), {})
+	func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+		dispatch_async(dispatch_get_main_queue()){
+			self.indicator.progress = Float(totalBytesWritten)/(Float)(totalBytesExpectedToWrite)
+		}
+	}
+	
+	func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
+		let downloadedImage = UIImage(data: NSData(contentsOfURL: location)!)!
+		dispatch_async(dispatch_get_main_queue()){
+			let imgWidth = downloadedImage.size.width
+			let imgHeight = downloadedImage.size.height
+			let finalHeight = UIScreen.mainScreen().bounds.width * imgHeight/imgWidth
+			self.imageView = UIImageView(frame: CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - finalHeight/2, UIScreen.mainScreen().bounds.width, finalHeight))
+			self.imageView!.image = downloadedImage
+			self.image = downloadedImage
+			self.scrollView.addSubview(self.imageView!)
+			self.indicator.hidden = true
+			self.finishedDisplaying = true
+		}
+	}
+	
+	func imageFromUrl(url : String) {
+		if let nsUrl = NSURL(string: url){
+			let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: self, delegateQueue: nil)
+			let downloadTask = session.downloadTaskWithURL(nsUrl)
+			downloadTask.resume()
+		}
 	}
 }

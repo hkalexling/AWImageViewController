@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DemoCollectionViewController: UICollectionViewController, AWImageViewControllerDelegate{
+class DemoCollectionViewController: UICollectionViewController, AWImageViewControllerDelegate {
 	
 	var images : [UIImage] = []
 	
