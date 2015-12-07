@@ -233,7 +233,6 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 		}
 		else{
 			UIView.animateWithDuration(self.animationDuration!, animations: {
-				self.imageView!.center = self.view.center
 				let width : CGFloat = UIScreen.mainScreen().bounds.width
 				let height : CGFloat = width * self.image.size.height/self.image.size.width
 				self.imageView!.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
