@@ -66,9 +66,18 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 	
 	private var finishedDisplaying : Bool = false
 	
-	private let indicator : UIProgressView = UIProgressView()
+	private let indicator = UIImageView()
+	private let indicatorText = UILabel()
 	
 	private var urlString : String?
+	
+	var progressIndicatorColor : UIColor = UIColor.whiteColor()
+	var progressIndicatorTextColor : UIColor = UIColor.whiteColor()
+	var progressIndicatorBgColor : UIColor = UIColor.darkGrayColor()
+	var progressIndicatorShowLabel : Bool = true
+	var progressIndicatorWidth : CGFloat = 10
+	var progressIndicatorLabelFont : UIFont = UIFont.systemFontOfSize(40)
+	var progressIndicatorRadius : CGFloat = 80
 	
 	func setup(originImageView : UIImageView, parentView : UIView, backgroundStyle : AWImageViewBackgroundStyle?, animationDuration : NSTimeInterval?, delegate : AWImageViewControllerDelegate?, longPressDelegate : AWImageViewControllerLongPressDelegate?){
 		
@@ -137,9 +146,16 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 		
 		self.view.addSubview(self.scrollView)
 		
-		self.indicator.frame = CGRectMake(UIScreen.mainScreen().bounds.width * 0.1, UIScreen.mainScreen().bounds.height/2, UIScreen.mainScreen().bounds.width * 0.8, 10)
+		self.indicator.frame = CGRectMake(UIScreen.mainScreen().bounds.width/2 - self.progressIndicatorRadius, UIScreen.mainScreen().bounds.height/2 - self.progressIndicatorRadius, self.progressIndicatorRadius * 2, self.progressIndicatorRadius * 2)
 		self.indicator.hidden = true
 		self.view.addSubview(self.indicator)
+		
+		self.indicatorText.frame = CGRectMake(0, 0, self.progressIndicatorRadius * 2, self.progressIndicatorRadius * 2)
+		self.indicatorText.textAlignment = NSTextAlignment.Center
+		self.indicatorText.backgroundColor = UIColor.clearColor()
+		self.indicatorText.textColor = self.progressIndicatorTextColor
+		self.indicatorText.font = self.progressIndicatorLabelFont
+		self.indicator.addSubview(self.indicatorText)
 		
 		if self.originImageView != nil {
 			self.imageView = UIImageView(frame: self.originFrame!)
@@ -310,7 +326,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 	
 	func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
 		dispatch_async(dispatch_get_main_queue()){
-			self.indicator.progress = Float(totalBytesWritten)/(Float)(totalBytesExpectedToWrite)
+			self.setProgress(CGFloat(totalBytesWritten)/(CGFloat)(totalBytesExpectedToWrite))
 		}
 	}
 	
@@ -335,5 +351,29 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 			let downloadTask = session.downloadTaskWithURL(nsUrl)
 			downloadTask.resume()
 		}
+	}
+	
+	func setProgress(progress : CGFloat){
+		UIGraphicsBeginImageContextWithOptions(CGSize(width: 2 * self.progressIndicatorRadius + self.progressIndicatorWidth, height: 2 * self.progressIndicatorRadius + self.progressIndicatorWidth), false, 0)
+		
+		let bgPath = UIBezierPath(arcCenter: CGPointMake(self.progressIndicatorRadius + self.progressIndicatorWidth/2, self.progressIndicatorRadius + self.progressIndicatorWidth/2), radius: self.progressIndicatorRadius, startAngle: 0, endAngle: CGFloat(2.0 * M_PI), clockwise: true)
+		bgPath.lineWidth = self.progressIndicatorWidth
+		self.progressIndicatorBgColor.setStroke()
+		bgPath.stroke()
+		
+		let percentagePath = UIBezierPath(arcCenter: CGPointMake(self.progressIndicatorRadius + self.progressIndicatorWidth/2, self.progressIndicatorRadius + self.progressIndicatorWidth/2), radius: self.progressIndicatorRadius, startAngle: CGFloat(-0.5 * M_PI), endAngle: self.progressToRadian(progress), clockwise: true)
+		percentagePath.lineWidth = self.progressIndicatorWidth
+		self.progressIndicatorColor.setStroke()
+		percentagePath.stroke()
+		
+		let img = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		
+		self.indicator.image = img
+		self.indicatorText.text = "\(Int(progress * 100))%"
+	}
+	
+	func progressToRadian(progress : CGFloat) -> CGFloat {
+		return CGFloat(2.0 * M_PI) * progress - CGFloat(0.5 * M_PI)
 	}
 }
