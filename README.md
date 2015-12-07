@@ -80,7 +80,7 @@ class SampleClass : UIViewController {
 
 ####Others:
 
-For more detail usages, please refer to the [Demo app](https://github.com/hkalexling/AWImageViewController/tree/master/AWImageViewController) included in this repo
+For more detail usages, please refer to the two demo apps included in this repo
 
 ##Todo
 
