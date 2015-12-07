@@ -66,11 +66,11 @@ class SampleClass : UIViewController {
     //Other stuff
     
     func showImageViewer(imageView : UIImageView){
-		self.awImageView = AWImageViewController()
+		self.awImageVC = AWImageViewController()
 		
-		self.awImageView.setupWithUrl("http:www.yourImageUrl.com/img.jpg", parentView: self.view, backgroundStyle: nil, animationDuration: nil, delegate: nil, longPressDelegate: nil)
+		self.awImageVC.setupWithUrl("http:www.yourImageUrl.com/img.jpg", parentView: self.view, backgroundStyle: nil, animationDuration: nil, delegate: nil, longPressDelegate: nil)
 		
-		self.view.addSubview(self.awImageView.view)
+		self.view.addSubview(self.awImageVC.view)
     }
 }
 ```
