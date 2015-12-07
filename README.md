@@ -33,7 +33,7 @@ Basically everything you will expect for an image viewer:
 
 Apple's `UIImage+ImageEffects` category is required. You can find the source [here](https://developer.apple.com/library/ios/samplecode/UIImageEffects/Listings/UIImageEffects_UIImageEffects_h.html). The two files are also included in this repo: [UIImage+ImageEffects.h](https://github.com/hkalexling/AWImageViewController/blob/master/AWImageViewController/UIImage%2BImageEffects.h), [UIImage+ImageEffects.m](https://github.com/hkalexling/AWImageViewController/blob/master/AWImageViewController/UIImage%2BImageEffects.m)
 
-Then add the [AWImageViewController.swift](https://github.com/hkalexling/AWImageViewController/blob/master/Source/AWImageViewController.swift) file into your project and do the following 
+Then add the [AWImageViewController.swift](https://github.com/hkalexling/AWImageViewController/blob/master/Source/AWImageViewController.swift) file into your project and do the following set up
 
 ####Basic usage without customisation:
 
