@@ -74,6 +74,15 @@ class SampleClass : UIViewController {
     }
 }
 ```
+`AWImageViewController` also provides the following variables for you to customize the progress indicator:
+
+    progressIndicatorColor : UIColor
+    progressIndicatorTextColor : UIColor
+    progressIndicatorBgColor : UIColor 
+    progressIndicatorShowLabel : Bool
+    progressIndicatorWidth : CGFloat 
+    progressIndicatorLabelFont : UIFont
+    progressIndicatorRadius : CGFloat
 
 ####Delegates:
 
