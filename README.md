@@ -3,7 +3,17 @@ A neat image viewer written in Swift
 
 ##Demo GIF
 
+- Portrait Mode:
+
 ![](https://github.com/hkalexling/AWImageViewController/blob/master/Media/Demo.gif)
+
+- Landscape Mode:
+
+![](https://github.com/hkalexling/AWImageViewController/blob/master/Media/LandscapeDemo.gif)
+
+- Use Web Image:
+
+![](https://github.com/hkalexling/AWImageViewController/blob/master/Media/WebImageDemo.gif)
 
 ##Features
 
@@ -16,7 +26,7 @@ Basically everything you will expect for an image viewer:
 - Long press to bring up action sheet (customisable)
 - Different background effects to choose from (three blur effects and one simple black background)
 - Transition with animation
-- [WIP] download image from web
+- download image from provided URL
 
 
 ##Usage
@@ -43,6 +53,26 @@ class SampleClass : UIViewController {
 }
 ```
 
+####Download image from URL:
+
+```swift
+class SampleClass : UIViewController {
+    
+    //Create instance of AWImageViewController as a global variable
+    var awImageVC : AWImageViewController!
+    
+    //Other stuff
+    
+    func showImageViewer(imageView : UIImageView){
+		self.awImageView = AWImageViewController()
+		
+		self.awImageView.setupWithUrl("http:www.yourImageUrl.com/img.jpg", parentView: self.view, backgroundStyle: nil, animationDuration: nil, delegate: nil, longPressDelegate: nil)
+		
+		self.view.addSubview(self.awImageView.view)
+    }
+}
+```
+
 ####Delegates:
 
 - `AWImageViewControllerDelegate`: Conform to this delegate and implement its delegate method `awImageViewDidDismiss()` to get callback when the image viewer has been dismissed
@@ -54,5 +84,6 @@ For more detail usages, please refer to the [Demo app](https://github.com/hkalex
 
 ##Todo
 
-- [ ] Integrate an image downloader to download image from a given url
+- [X] Integrate an image downloader to download image from a given URL
+- [ ] Use a better looking progress indicator
 - [ ] Implement 3D Touch peek and pop
