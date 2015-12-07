@@ -208,7 +208,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 				self.imageView!.transform = CGAffineTransformScale(self.imageView!.transform, sender.scale, sender.scale)
 				sender.scale = 1
 			}
-			self.updateContentOffset()
+			self.updateContentInset()
 		}
 	}
 
@@ -232,7 +232,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 			self.imageView!.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
 			}, completion: {(finished : Bool) in
 				self.finishedDisplaying = true
-				self.updateContentOffset()
+				self.updateContentInset()
 		})
 	}
 	
@@ -244,7 +244,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 			UIView.animateWithDuration(self.animationDuration!, animations: {
 				self.imageView!.frame = CGRectMake(UIScreen.mainScreen().bounds.width/2 - width/2, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
 				}, completion: {(finished : Bool) in
-					self.updateContentOffset()
+					self.updateContentInset()
 			})
 		}
 		else{
@@ -252,8 +252,8 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 				let width : CGFloat = UIScreen.mainScreen().bounds.width
 				let height : CGFloat = width * self.image.size.height/self.image.size.width
 				self.imageView!.frame = CGRectMake(0, UIScreen.mainScreen().bounds.height/2 - height/2, width, height)
-				self.updateContentOffset()
-				})
+				self.updateContentInset()
+			})
 		}
 	}
 	
@@ -275,7 +275,7 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 	}
 	func awImageViewDidDismiss() {}
 	
-	func updateContentOffset(){
+	func updateContentInset(){
 		self.scrollView.contentSize = self.imageView!.frame.size
 
 		var top : CGFloat = 0
