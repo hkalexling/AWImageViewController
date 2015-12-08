@@ -97,4 +97,5 @@ For more detail usages, please refer to the two demo apps included in this repo
 
 - [X] Integrate an image downloader to download image from a given URL
 - [X] Use a better looking progress indicator
+- [ ] Use optional placeholder image before download finished
 - [ ] Implement 3D Touch peek and pop
