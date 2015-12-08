@@ -19,7 +19,10 @@ class ViewController: UIViewController {
 	@IBAction func tapped(sender: UIButton) {
 		self.awImageView = AWImageViewController()
 		
-		self.awImageView.setupWithUrl("http://konachan.com/sample/94e60b887588689c6f641d2058edc1fe/Konachan.com%20-%20162647%20sample.jpg", parentView: self.view, backgroundStyle: nil, animationDuration: nil, delegate: nil, longPressDelegate: nil)
+		self.awImageView.progressIndicatorColor = UIColor.grayColor()
+		self.awImageView.progressIndicatorTextColor = UIColor.grayColor()
+		
+		self.awImageView.setupWithUrl("http://konachan.com/sample/94e60b887588689c6f641d2058edc1fe/Konachan.com%20-%20162647%20sample.jpg", parentView: self.view, backgroundStyle: .LightBlur, animationDuration: nil, delegate: nil, longPressDelegate: nil)
 		
 		self.view.addSubview(self.awImageView.view)
 	}
