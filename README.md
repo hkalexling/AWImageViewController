@@ -65,10 +65,10 @@ class SampleClass : UIViewController {
     
     //Other stuff
     
-    func showImageViewer(imageView : UIImageView){
+    func showImageViewer(urlString : String) {
 		self.awImageVC = AWImageViewController()
 		
-		self.awImageVC.setupWithUrl("http:www.yourImageUrl.com/img.jpg", parentView: self.view, backgroundStyle: nil, animationDuration: nil, delegate: nil, longPressDelegate: nil)
+		self.awImageVC.setupWithUrl(urlString, parentView: self.view, backgroundStyle: nil, animationDuration: nil, delegate: nil, longPressDelegate: nil)
 		
 		self.view.addSubview(self.awImageVC.view)
     }
@@ -99,5 +99,6 @@ For more detail usages, please refer to the two demo apps included in this repo
 
 - [X] Integrate an image downloader to download image from a given URL
 - [X] Use a better looking progress indicator
+- [ ] GIF support
 - [ ] Use optional placeholder image before download finished
 - [ ] Implement 3D Touch peek and pop
