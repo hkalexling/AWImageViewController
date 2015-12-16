@@ -127,13 +127,13 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 		if self.backgroundStyle != .None {
 			var bgImg : UIImage
 			if self.backgroundStyle == .LightBlur {
-				bgImg = UIImage.imageFromUIView(self.parentView).applyLightEffect()
+				bgImg = UIImage.imageFromUIView(self.parentView).applyLightEffect()!
 			}
 			else if self.backgroundStyle == .ExtraLightBlur {
-				bgImg = UIImage.imageFromUIView(self.parentView).applyExtraLightEffect()
+				bgImg = UIImage.imageFromUIView(self.parentView).applyExtraLightEffect()!
 			}
 			else{
-				bgImg = UIImage.imageFromUIView(self.parentView).applyDarkEffect()
+				bgImg = UIImage.imageFromUIView(self.parentView).applyDarkEffect()!
 			}
 			self.bgImageView = UIImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height))
 			self.bgImageView.image = bgImg
