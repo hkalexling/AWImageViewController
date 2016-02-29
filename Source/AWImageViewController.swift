@@ -263,12 +263,16 @@ class AWImageViewController: UIViewController, UIScrollViewDelegate, NSURLSessio
 			self.view.backgroundColor = UIColor.clearColor()
 			if self.originFrame != nil {
 				self.imageView!.frame = self.originFrame!
+				self.updateContentInset()
 			}
 			else if self.imageView != nil {
 				self.imageView!.hidden = true
 			}
 			}, completion: {(finished : Bool) in
-				self.view.hidden = true //I know I shouldn't simply hide it, but if I use `self.view.removeFromSuperview()`, the `didSelectItemAtIndexPath` method in collection view controller won't get called again. I might come back and fix this later
+				self.view.hidden = true
+				for child in self.view.subviews {
+					child.removeFromSuperview()
+				}
 				self.originImageView?.image = self.image
 				self.delegate?.awImageViewDidDismiss()
 		})
